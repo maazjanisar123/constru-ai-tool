@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConstruAI - AI Powered Construction Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #1e3a8a;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .ai-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            max-width: 1400px;
+            overflow: hidden;
+        }
+        
+        .ai-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .ai-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .ai-tagline {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .ai-nav {
+            background: var(--secondary);
+            padding: 0;
+        }
+        
+        .ai-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 15px 20px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .ai-nav .nav-link:hover,
+        .ai-nav .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .ai-nav .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .ai-main {
+            padding: 30px;
+            min-height: 600px;
+        }
+        
+        .ai-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .ai-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .ai-feature {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .ai-feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .ai-chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .ai-chat-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(44, 90, 160, 0.4);
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            border: none;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .ai-prediction {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .ai-insight {
+            background: #f8fafc;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        
+        .ai-progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .ai-badge {
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .ai-section {
+            display: none;
+        }
+        
+        .ai-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .ai-command-input {
+            border-radius: 25px;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-command-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .ai-voice-btn {
+            background: var(--success);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .ai-nav .nav-link {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .ai-nav .nav-link i {
+                margin-right: 5px;
+            }
+            
+            .ai-main {
+                padding: 15px;
+            }
+            
+            .ai-card {
+                padding: 20px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ai-container">
+        <!-- AI Header -->
+        <div class="ai-header">
+            <div class="ai-logo">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h1 class="mb-2">ConstruAI</h1>
+            <p class="ai-tagline">AI-Powered Construction Management Platform</p>
+            <div class="mt-3">
+                <span class="ai-badge me-2"><i class="fas fa-brain me-1"></i>AI Assistant</span>
+                <span class="ai-badge me-2"><i class="fas fa-chart-line me-1"></i>Smart Analytics</span>
+                <span class="ai-badge"><i class="fas fa-bolt me-1"></i>Real-time Insights</span>
+            </div>
+        </div>
+        
+        <!-- AI Navigation -->
+        <nav class="ai-nav">
+            <ul class="nav nav-pills nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> AI Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="estimator">
+                        <i class="fas fa-calculator"></i> AI Estimator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="planner">
+                        <i class="fas fa-project-diagram"></i> AI Planner
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="monitor">
+                        <i class="fas fa-chart-bar"></i> AI Monitor
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="assistant">
+                        <i class="fas fa-comments"></i> AI Assistant
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- AI Main Content -->
+        <div class="ai-main">
+            <!-- AI Dashboard -->
+            <div id="dashboard" class="ai-section active">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h3 class="mb-4">AI Project Intelligence</h3>
+                        <div class="ai-prediction">
+                            <h5><i class="fas fa-lightbulb me-2"></i>AI Prediction</h5>
+                            <p class="mb-0">Based on current progress, project is likely to complete 5 days ahead of schedule with 3.2% cost savings.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ai-card text-center">
+                            <div class="ai-feature-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5>AI Readiness</h5>
+                            <div class="progress ai-progress mb-2">
+                                <div class="progress-bar" style="width: 85%"></div>
+                            </div>
+                            <small>85% Systems Optimized</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-primary">₹2.45Cr</h2>
+                            <p>Project Value</p>
+                            <div class="ai-badge bg-success">On Budget</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-success">42%</h2>
+                            <p>Completion</p>
+                            <div class="ai-badge bg-warning">Ahead by 5 Days</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-info">18</h2>
+                            <p>Active Tasks</p>
+                            <div class="ai-badge bg-info">AI Optimized</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-warning">96%</h2>
+                            <p>Quality Score</p>
+                            <div class="ai-badge bg-success">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">AI Risk Assessment</h5>
+                            <div class="ai-insight">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <strong>Weather Risk:</strong> 30% chance of rain delay next week
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-truck text-info me-2"></i>
+                                <strong>Supply Chain:</strong> Steel delivery may delay by 2 days
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-hard-hat text-success me-2"></i>
+                                <strong>Labor:</strong> Optimal workforce allocation detected
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">AI Recommendations</h5>
+                            <div class="ai-insight">
+                                <i class="fas fa-bolt text-warning me-2"></i>
+                                Increase concrete pouring speed by 15% to avoid weather delays
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-dollar-sign text-success me-2"></i>
+                                Switch to local sand supplier to save ₹85,000
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-users text-info me-2"></i>
+                                Reallocate 3 workers to foundation work for better efficiency
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Estimator -->
+            <div id="estimator" class="ai-section">
+                <h3 class="mb-4">AI Construction Estimator</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Project Inputs</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Project Type</label>
+                                <select class="form-select" id="projectType">
+                                    <option value="residential">Residential Building</option>
+                                    <option value="commercial">Commercial Complex</option>
+                                    <option value="industrial">Industrial Project</option>
+                                    <option value="infrastructure">Infrastructure</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Built-up Area (sq ft)</label>
+                                <input type="number" class="form-control" id="area" value="2500">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Location</label>
+                                <select class="form-select" id="location">
+                                    <option value="delhi">Delhi NCR</option>
+                                    <option value="mumbai">Mumbai</option>
+                                    <option value="bangalore">Bangalore</option>
+                                    <option value="gulf">Gulf Region</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Quality Level</label>
+                                <select class="form-select" id="quality">
+                                    <option value="economy">Economy</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="premium" selected>Premium</option>
+                                    <option value="luxury">Luxury</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="generateAIEstimate()">
+                                <i class="fas fa-calculator me-2"></i>Generate AI Estimate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3">AI Cost Breakdown</h5>
+                            <div id="aiEstimateResult">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-calculator fa-3x text-muted mb-3"></i>
+                                    <p>Enter project details and click "Generate AI Estimate"</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-card mt-4">
+                            <h5 class="mb-3">AI Cost Optimization</h5>
+                            <div class="ai-insight">
+                                <i class="fas fa-chart-line text-success me-2"></i>
+                                <strong>Material Optimization:</strong> AI suggests alternative materials saving 12%
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                <strong>Time Savings:</strong> Pre-fab components can reduce timeline by 18 days
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-tools text-info me-2"></i>
+                                <strong>Labor Efficiency:</strong> Optimal crew size identified for 95% efficiency
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Planner -->
+            <div id="planner" class="ai-section">
+                <h3 class="mb-4">AI Project Planner</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">AI Schedule Optimization</h5>
+                            <canvas id="ganttChart" height="300"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Critical Path Analysis</h5>
+                            <div class="ai-insight">
+                                <i class="fas fa-arrow-right text-danger me-2"></i>
+                                <strong>Critical Path:</strong> Foundation → Structure → MEP
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-compress-arrows-alt text-success me-2"></i>
+                                <strong>Float Available:</strong> Finishing works have 12 days float
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-bolt text-warning me-2"></i>
+                                <strong>Bottleneck:</strong> Steel delivery is critical path constraint
+                            </div>
+                        </div>
+                        
+                        <div class="ai-card mt-4">
+                            <h5 class="mb-3">Resource Allocation</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Resource</th>
+                                            <th>Allocated</th>
+                                            <th>Utilization</th>
+                                            <th>AI Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Labor</td>
+                                            <td>45 workers</td>
+                                            <td>92%</td>
+                                            <td><span class="ai-badge bg-success">Optimal</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Concrete</td>
+                                            <td>850 cum</td>
+                                            <td>65%</td>
+                                            <td><span class="ai-badge bg-warning">Under</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Equipment</td>
+                                            <td>8 machines</td>
+                                            <td>78%</td>
+                                            <td><span class="ai-badge bg-success">Good</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Monitor -->
+            <div id="monitor" class="ai-section">
+                <h3 class="mb-4">AI Project Monitor</h3>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Real-time Progress Tracking</h5>
+                            <canvas id="progressChart" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">AI Alerts</h5>
+                            <div class="ai-insight bg-light">
+                                <i class="fas fa-exclamation-circle text-danger me-2"></i>
+                                <strong>Delay Alert:</strong> Foundation work behind by 2 days
+                            </div>
+                            <div class="ai-insight bg-light mt-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Quality Pass:</strong> Concrete tests passed (M30)
+                            </div>
+                            <div class="ai-insight bg-light mt-2">
+                                <i class="fas fa-bolt text-warning me-2"></i>
+                                <strong>Efficiency High:</strong> Labor productivity at 115%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Cost vs Budget</h5>
+                            <canvas id="costChart" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Quality Metrics</h5>
+                            <canvas id="qualityChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Assistant -->
+            <div id="assistant" class="ai-section">
+                <h3 class="mb-4">AI Construction Assistant</h3>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Ask ConstruAI</h5>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control ai-command-input" id="aiQuestion" placeholder="Ask anything about your construction project...">
+                                <button class="btn ai-voice-btn" type="button" onclick="askAI()">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div class="border rounded p-3 bg-light" style="min-height: 200px;" id="aiResponse">
+                                <div class="text-center py-5 text-muted">
+                                    <i class="fas fa-robot fa-2x mb-3"></i>
+                                    <p>Hello! I'm your AI Construction Assistant. How can I help you today?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Quick Commands</h5>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary text-start" onclick="askQuickQuestion('Generate project status report')">
+                                    <i class="fas fa-chart-bar me-2"></i>Project Status
+                                </button>
+                                <button class="btn btn-outline-success text-start" onclick="askQuickQuestion('Show cost breakdown')">
+                                    <i class="fas fa-dollar-sign me-2"></i>Cost Analysis
+                                </button>
+                                <button class="btn btn-outline-warning text-start" onclick="askQuickQuestion('Identify project risks')">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Risk Assessment
+                                </button>
+                                <button class="btn btn-outline-info text-start" onclick="askQuickQuestion('Optimize construction schedule')">
+                                    <i class="fas fa-project-diagram me-2"></i>Schedule Optimize
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-card mt-4">
+                            <h5 class="mb-3">AI Capabilities</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Cost Estimation</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Schedule Optimization</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Risk Prediction</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Quality Monitoring</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Resource Allocation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Chatbot -->
+    <div class="ai-chatbot">
+        <button class="ai-chat-btn" onclick="toggleChat()">
+            <i class="fas fa-robot"></i>
+        </button>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('[data-section]').forEach(link => {
+            link.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                
+                // Update active nav
+                document.querySelectorAll('.ai-nav .nav-link').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show section
+                document.querySelectorAll('.ai-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+        
+        // AI Estimate Generator
+        function generateAIEstimate() {
+            const area = document.getElementById('area').value;
+            const projectType = document.getElementById('projectType').value;
+            const location = document.getElementById('location').value;
+            const quality = document.getElementById('quality').value;
+            
+            // AI Calculation (simulated)
+            const baseRates = {
+                residential: 1800,
+                commercial: 2200,
+                industrial: 2500,
+                infrastructure: 3000
+            };
+            
+            const locationMultipliers = {
+                delhi: 1.0,
+                mumbai: 1.15,
+                bangalore: 1.1,
+                gulf: 0.22 // AED conversion
+            };
+            
+            const qualityMultipliers = {
+                economy: 0.85,
+                standard: 1.0,
+                premium: 1.25,
+                luxury: 1.6
+            };
+            
+            const baseCost = area * baseRates[projectType];
+            const locationCost = baseCost * locationMultipliers[location];
+            const qualityCost = locationCost * qualityMultipliers[quality];
+            const totalCost = qualityCost;
+            
+            const resultHTML = `
+                <div class="text-center mb-4">
+                    <h3 class="text-primary">${formatCurrency(totalCost, location)}</h3>
+                    <p class="text-muted">AI Estimated Cost</p>
+                </div>
+                
+                <div class="row text-center mb-4">
+                    <div class="col-4">
+                        <div class="border rounded p-2">
+                            <div class="h5 mb-0">${Math.round(area * 0.11)}</div>
+                            <small>Concrete (cum)</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border rounded p-2">
+                            <div class="h5 mb-0">${Math.round(area * 0.085)}</div>
+                            <small>Steel (MT)</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border rounded p-2">
+                            <div class="h5 mb-0">${Math.round(area * 1.9)}</div>
+                            <small>Plaster (sqm)</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-insight">
+                    <i class="fas fa-lightbulb text-warning me-2"></i>
+                    <strong>AI Suggestion:</strong> Consider pre-cast elements to save 15% on timeline
+                </div>
+            `;
+            
+            document.getElementById('aiEstimateResult').innerHTML = resultHTML;
+        }
+        
+        function formatCurrency(amount, location) {
+            if (location === 'gulf') {
+                const aed = amount * 0.045; // Approximate conversion
+                return `د.إ ${Math.round(aed).toLocaleString()}`;
+            }
+            return `₹${Math.round(amount).toLocaleString()}`;
+        }
+        
+        // AI Assistant Functions
+        function askAI() {
+            const question = document.getElementById('aiQuestion').value;
+            if (!question.trim()) return;
+            
+            const responses = {
+                'project status': 'Project is 42% complete, running 5 days ahead of schedule. Budget utilization is at 38%. Key milestone: Foundation work 65% done.',
+                'cost breakdown': 'Total Cost: ₹2.45Cr | Civil: ₹1.2Cr | MEP: ₹25L | Finishing: ₹85L | Contingency: ₹15L',
+                'risk assessment': '1. Weather delay risk: 30% 2. Steel supply delay: 15% 3. Labor shortage: Low risk',
+                'schedule optimization': 'AI recommends: 1. Parallel MEP work 2. Pre-fab components 3. Optimized crew shifts. Potential savings: 18 days',
+                'material requirements': 'Concrete: 850 cum | Steel: 85 MT | Bricks: 1,20,000 | Cement: 4500 bags',
+                'labor allocation': 'Current: 45 workers | Optimal: 48 workers | Suggested: Add 3 more masons',
+                'quality check': 'Concrete tests: PASS (M30) | Steel quality: PASS | Brick work: 95% compliance',
+                'weather impact': 'Next week: 30% rain chance | Suggested: Accelerate excavation work',
+                'budget analysis': 'Total: ₹2.45Cr | Spent: ₹92L | Remaining: ₹1.53Cr | On track: YES',
+                'timeline': 'Project start: 15 Jan 2024 | Planned end: 30 Nov 2024 | Current projection: 25 Nov 2024'
+            };
+            
+            const questionLower = question.toLowerCase();
+            let response = "I'm still learning about construction management. Could you please ask about project status, costs, risks, or scheduling?";
+            
+            // Find the best matching response
+            for (const [key, value] of Object.entries(responses)) {
+                if (questionLower.includes(key)) {
+                    response = value;
+                    break;
+                }
+            }
+            
+            document.getElementById('aiResponse').innerHTML = `
+                <div class="d-flex mb-3">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-user-circle fa-2x text-muted"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <strong>You:</strong> ${question}
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-robot fa-2x text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <strong>ConstruAI:</strong> ${response}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('aiQuestion').value = '';
+        }
+        
+        function askQuickQuestion(question) {
+            document.getElementById('aiQuestion').value = question;
+            askAI();
+        }
+        
+        function toggleChat() {
+            showSection('assistant');
+        }
+        
+        function showSection(sectionId) {
+            document.querySelectorAll('.ai-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.ai-nav .nav-link').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+        }
+        
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gantt Chart
+            const ganttCtx = document.getElementById('ganttChart').getContext('2d');
+            new Chart(ganttCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Survey', 'Excavation', 'Foundation', 'Structure', 'MEP', 'Finishing'],
+                    datasets: [{
+                        label: 'Planned',
+                        data: [100, 100, 100, 100, 100, 100],
+                        backgroundColor: '#e2e8f0',
+                        borderColor: '#cbd5e1',
+                        borderWidth: 1
+                    }, {
+                        label: 'Actual',
+                        data: [100, 100, 65, 0, 0, 0],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#2563eb',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Progress Chart
+            const progressCtx = document.getElementById('progressChart').getContext('2d');
+            new Chart(progressCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                    datasets: [{
+                        label: 'Planned Progress',
+                        data: [5, 15, 25, 35, 45, 55],
+                        borderColor: '#e2e8f0',
+                        borderWidth: 2,
+                        fill: false
+                    }, {
+                        label: 'Actual Progress',
+                        data: [5, 18, 30, 42, 52, 60],
+                        borderColor: '#10b981',
+                        borderWidth: 3,
+                        fill: false
+                    }]
+                }
+            });
+            
+            // Cost Chart
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            new Chart(costCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Civil', 'MEP', 'Finishing', 'Services', 'Contingency'],
+                    datasets: [{
+                        label: 'Budget (Lakhs)',
+                        data: [120, 25, 85, 15, 20],
+                        backgroundColor: '#e2e8f0'
+                    }, {
+                        label: 'Actual (Lakhs)',
+                        data: [95, 8, 12, 5, 3],
+                        backgroundColor: '#3b82f6'
+                    }]
+                }
+            });
+            
+            // Quality Chart
+            const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+            new Chart(qualityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Excellent', 'Good', 'Satisfactory', 'Needs Improvement'],
+                    datasets: [{
+                        data: [65, 25, 8, 2],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                    }]
+                }
+            });
+        });
+
+        // Enter key support for AI assistant
+        document.getElementById('aiQuestion').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                askAI();
+            }
+        });
+    </script>
+</body>
+</html>
