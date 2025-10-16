@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConstruAI Pro - Complete Construction Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #1e3a8a;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .ai-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            max-width: 1400px;
+            overflow: hidden;
+        }
+        
+        .ai-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .ai-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .ai-tagline {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .ai-nav {
+            background: var(--secondary);
+            padding: 0;
+        }
+        
+        .ai-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 15px 20px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .ai-nav .nav-link:hover,
+        .ai-nav .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .ai-nav .nav-link i {
+            width: 20px;
+            margin-right: 8px;
+        }
+        
+        .ai-main {
+            padding: 30px;
+            min-height: 600px;
+        }
+        
+        .ai-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .ai-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .ai-feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .ai-prediction {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .ai-insight {
+            background: #f8fafc;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        
+        .ai-progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .ai-badge {
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .ai-section {
+            display: none;
+        }
+        
+        .ai-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .activity-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .activity-card:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+        
+        .activity-card.selected {
+            border-color: var(--primary);
+            background: #e0e7ff;
+        }
+        
+        .work-order-template {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 25px;
+            background: #f8fafc;
+        }
+        
+        .bill-item {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .survey-point {
+            background: #e0e7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .ai-nav .nav-link {
+                padding: 12px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .ai-nav .nav-link i {
+                margin-right: 5px;
+            }
+            
+            .ai-main {
+                padding: 15px;
+            }
+            
+            .ai-card {
+                padding: 20px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+
+        .construction-activity {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="ai-container">
+        <!-- AI Header -->
+        <div class="ai-header">
+            <div class="ai-logo">
+                <i class="fas fa-hard-hat"></i>
+            </div>
+            <h1 class="mb-2">ConstruAI Pro</h1>
+            <p class="ai-tagline">Complete Construction Management - Estimate to Handover</p>
+            <div class="mt-3">
+                <span class="ai-badge me-2"><i class="fas fa-calculator me-1"></i>Auto Estimate</span>
+                <span class="ai-badge me-2"><i class="fas fa-file-invoice me-1"></i>Work Order</span>
+                <span class="ai-badge me-2"><i class="fas fa-receipt me-1"></i>Billing</span>
+                <span class="ai-badge"><i class="fas fa-ruler-combined me-1"></i>Surveying</span>
+            </div>
+        </div>
+        
+        <!-- AI Navigation -->
+        <nav class="ai-nav">
+            <ul class="nav nav-pills nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="activities">
+                        <i class="fas fa-tools"></i> Activities
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="estimator">
+                        <i class="fas fa-calculator"></i> AI Estimator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="workorder">
+                        <i class="fas fa-file-contract"></i> Work Order
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="billing">
+                        <i class="fas fa-file-invoice"></i> Billing
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="surveying">
+                        <i class="fas fa-ruler-combined"></i> Surveying
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- AI Main Content -->
+        <div class="ai-main">
+            <!-- Dashboard -->
+            <div id="dashboard" class="ai-section active">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h3 class="mb-4">Construction Project Dashboard</h3>
+                        <div class="ai-prediction">
+                            <h5><i class="fas fa-lightbulb me-2"></i>AI Project Analysis</h5>
+                            <p class="mb-0">Project "Residential Villa" is 42% complete. All activities are on track with 5 days ahead of schedule.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ai-card text-center">
+                            <div class="ai-feature-icon mx-auto mb-3">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5>AI Efficiency</h5>
+                            <div class="progress ai-progress mb-2">
+                                <div class="progress-bar" style="width: 92%"></div>
+                            </div>
+                            <small>92% Systems Optimized</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-primary">18</h2>
+                            <p>Active Activities</p>
+                            <div class="ai-badge bg-success">All On Track</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-success">₹92L</h2>
+                            <p>Work Order Value</p>
+                            <div class="ai-badge bg-warning">5 Pending</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-info">24</h2>
+                            <p>Bills Generated</p>
+                            <div class="ai-badge bg-info">₹45L Paid</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ai-card text-center">
+                            <h2 class="text-warning">156</h2>
+                            <p>Survey Points</p>
+                            <div class="ai-badge bg-success">Accurate</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Recent Activities</h5>
+                            <div class="ai-insight">
+                                <i class="fas fa-tile text-warning me-2"></i>
+                                <strong>Tile Work:</strong> Room 201 completed - 45 sqm vitrified tiles
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-bolt text-info me-2"></i>
+                                <strong>Electrical:</strong> Ground floor wiring 85% complete
+                            </div>
+                            <div class="ai-insight">
+                                <i class="fas fa-faucet text-success me-2"></i>
+                                <strong>Plumbing:</strong> Kitchen plumbing work order issued
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Quick Actions</h5>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" onclick="showSection('activities')">
+                                    <i class="fas fa-plus-circle me-2"></i>New Activity
+                                </button>
+                                <button class="btn btn-success" onclick="showSection('estimator')">
+                                    <i class="fas fa-calculator me-2"></i>Quick Estimate
+                                </button>
+                                <button class="btn btn-info" onclick="showSection('workorder')">
+                                    <i class="fas fa-file-contract me-2"></i>Create Work Order
+                                </button>
+                                <button class="btn btn-warning" onclick="showSection('billing')">
+                                    <i class="fas fa-receipt me-2"></i>Generate Bill
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Construction Activities -->
+            <div id="activities" class="ai-section">
+                <h3 class="mb-4">Construction Activities Management</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Select Activity Type</h5>
+                            <div class="list-group">
+                                <a class="list-group-item list-group-item-action active" onclick="selectActivity('tile-work')">
+                                    <i class="fas fa-tile me-2"></i>Tile Work
+                                </a>
+                                <a class="list-group-item list-group-item-action" onclick="selectActivity('plumbing')">
+                                    <i class="fas fa-faucet me-2"></i>Plumbing
+                                </a>
+                                <a class="list-group-item list-group-item-action" onclick="selectActivity('electrical')">
+                                    <i class="fas fa-bolt me-2"></i>Electrical
+                                </a>
+                                <a class="list-group-item list-group-item-action" onclick="selectActivity('painting')">
+                                    <i class="fas fa-paint-roller me-2"></i>Painting
+                                </a>
+                                <a class="list-group-item list-group-item-action" onclick="selectActivity('carpentry')">
+                                    <i class="fas fa-hammer me-2"></i>Carpentry
+                                </a>
+                                <a class="list-group-item list-group-item-action" onclick="selectActivity('false-ceiling')">
+                                    <i class="fas fa-th me-2"></i>False Ceiling
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3" id="activityTitle">Activity Details</h5>
+                            <div id="activityForm">
+                                <div class="text-center py-5 text-muted">
+                                    <i class="fas fa-tools fa-3x mb-3"></i>
+                                    <p>Select an activity type to get started</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Estimator -->
+            <div id="estimator" class="ai-section">
+                <h3 class="mb-4">AI Construction Estimator</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Project Details</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Activity Type</label>
+                                <select class="form-select" id="estimateActivity">
+                                    <option value="tile-work">Tile Work</option>
+                                    <option value="plumbing">Plumbing</option>
+                                    <option value="electrical">Electrical Work</option>
+                                    <option value="painting">Painting</option>
+                                    <option value="carpentry">Carpentry</option>
+                                    <option value="false-ceiling">False Ceiling</option>
+                                    <option value="excavation">Excavation</option>
+                                    <option value="concrete">Concrete Work</option>
+                                    <option value="masonry">Masonry</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Area/Quantity</label>
+                                <input type="number" class="form-control" id="estimateQuantity" placeholder="Enter quantity">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Unit</label>
+                                <select class="form-select" id="estimateUnit">
+                                    <option value="sqm">Square Meter (sqm)</option>
+                                    <option value="sqft">Square Feet (sqft)</option>
+                                    <option value="rm">Running Meter (rm)</option>
+                                    <option value="cum">Cubic Meter (cum)</option>
+                                    <option value="each">Each</option>
+                                    <option value="point">Point</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Quality Level</label>
+                                <select class="form-select" id="estimateQuality">
+                                    <option value="economy">Economy</option>
+                                    <option value="standard" selected>Standard</option>
+                                    <option value="premium">Premium</option>
+                                    <option value="luxury">Luxury</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="generateEstimate()">
+                                <i class="fas fa-calculator me-2"></i>Generate AI Estimate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3">AI Cost Estimate</h5>
+                            <div id="estimateResult">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-calculator fa-3x text-muted mb-3"></i>
+                                    <p>Enter activity details to generate estimate</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-card mt-4">
+                            <h5 class="mb-3">BOQ Breakdown</h5>
+                            <div id="boqResult">
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fas fa-list-alt fa-2x mb-3"></i>
+                                    <p>Bill of Quantities will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Work Order -->
+            <div id="workorder" class="ai-section">
+                <h3 class="mb-4">Work Order Management</h3>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Create Work Order</h5>
+                            <form id="workOrderForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Work Order Number</label>
+                                    <input type="text" class="form-control" value="WO-2024-001" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contractor Name</label>
+                                    <input type="text" class="form-control" placeholder="Enter contractor name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Activity Type</label>
+                                    <select class="form-select" id="woActivity">
+                                        <option value="tile-work">Tile Work</option>
+                                        <option value="plumbing">Plumbing</option>
+                                        <option value="electrical">Electrical</option>
+                                        <option value="painting">Painting</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Location/Area</label>
+                                    <input type="text" class="form-control" placeholder="e.g., Room 201, Kitchen">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Work Description</label>
+                                    <textarea class="form-control" rows="3" placeholder="Detailed work description..."></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Start Date</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">End Date</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-success w-100" onclick="generateWorkOrder()">
+                                    <i class="fas fa-file-contract me-2"></i>Generate Work Order
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Work Order Preview</h5>
+                            <div class="work-order-template">
+                                <div id="workOrderPreview">
+                                    <div class="text-center py-5 text-muted">
+                                        <i class="fas fa-file-contract fa-3x mb-3"></i>
+                                        <p>Work order preview will appear here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-card mt-4">
+                            <h5 class="mb-3">Active Work Orders</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>WO No.</th>
+                                            <th>Activity</th>
+                                            <th>Contractor</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>WO-2024-015</td>
+                                            <td>Tile Work</td>
+                                            <td>ABC Tiles</td>
+                                            <td><span class="badge bg-warning">In Progress</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>WO-2024-014</td>
+                                            <td>Plumbing</td>
+                                            <td>XYZ Plumbing</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Billing -->
+            <div id="billing" class="ai-section">
+                <h3 class="mb-4">Billing & Invoicing</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Create Bill</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Bill Number</label>
+                                <input type="text" class="form-control" value="BILL-2024-001" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Work Order</label>
+                                <select class="form-select" id="billWorkOrder">
+                                    <option value="WO-2024-015">WO-2024-015: Tile Work</option>
+                                    <option value="WO-2024-014">WO-2024-014: Plumbing</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Bill Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <button class="btn btn-primary w-100 mb-3" onclick="generateBill()">
+                                <i class="fas fa-file-invoice me-2"></i>Generate Bill
+                            </button>
+                            <button class="btn btn-success w-100" onclick="downloadBill()">
+                                <i class="fas fa-download me-2"></i>Download PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Bill Preview</h5>
+                            <div id="billPreview">
+                                <div class="text-center py-5 text-muted">
+                                    <i class="fas fa-receipt fa-3x mb-3"></i>
+                                    <p>Bill preview will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Surveying -->
+            <div id="surveying" class="ai-section">
+                <h3 class="mb-4">Surveying & Layout Management</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Survey Points</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Point ID</label>
+                                <input type="text" class="form-control" id="pointId" placeholder="e.g., P001">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">X Coordinate</label>
+                                        <input type="number" class="form-control" id="pointX" placeholder="X">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Y Coordinate</label>
+                                        <input type="number" class="form-control" id="pointY" placeholder="Y">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Elevation (Z)</label>
+                                <input type="number" class="form-control" id="pointZ" placeholder="Z">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <input type="text" class="form-control" id="pointDesc" placeholder="Point description">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="addSurveyPoint()">
+                                <i class="fas fa-plus-circle me-2"></i>Add Survey Point
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="ai-card">
+                            <h5 class="mb-3">Survey Points List</h5>
+                            <div id="surveyPointsList">
+                                <div class="survey-point">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>P001</strong>
+                                        <span class="text-muted">15-02-2024</span>
+                                    </div>
+                                    <div>Coordinates: X=1250.45, Y=980.25, Z=105.20</div>
+                                    <small>Main corner point - North East</small>
+                                </div>
+                                <div class="survey-point">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>P002</strong>
+                                        <span class="text-muted">15-02-2024</span>
+                                    </div>
+                                    <div>Coordinates: X=1250.45, Y=850.25, Z=105.15</div>
+                                    <small>Column center point C1</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-card mt-4">
+                            <h5 class="mb-3">Layout Drawing</h5>
+                            <div class="border rounded bg-light" style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-drafting-compass fa-3x mb-3"></i>
+                                    <p>Layout drawing area</p>
+                                    <small>Survey points will be plotted here</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.ai-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.ai-nav .nav-link').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+        }
+
+        document.querySelectorAll('[data-section]').forEach(link => {
+            link.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                showSection(sectionId);
+            });
+        });
+
+        // Activity Management
+        function selectActivity(activityType) {
+            const activities = {
+                'tile-work': {
+                    title: 'Tile Work Activity',
+                    form: `
+                        <div class="mb-3">
+                            <label class="form-label">Room/Area Name</label>
+                            <input type="text" class="form-control" placeholder="e.g., Living Room, Kitchen">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tile Area (sqm)</label>
+                            <input type="number" class="form-control" placeholder="Enter area in square meters">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tile Type</label>
+                            <select class="form-select">
+                                <option>Vitrified Tiles</option>
+                                <option>Ceramic Tiles</option>
+                                <option>Marble</option>
+                                <option>Granite</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tile Size</label>
+                            <select class="form-select">
+                                <option>2x2 feet</option>
+                                <option>2x4 feet</option>
+                                <option>1x1 feet</option>
+                                <option>Custom</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="showSection('estimator')">
+                            <i class="fas fa-calculator me-2"></i>Generate Estimate
+                        </button>
+                    `
+                },
+                'plumbing': {
+                    title: 'Plumbing Work Activity',
+                    form: `
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" placeholder="e.g., Kitchen, Bathroom, Outdoor">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fixture Type</label>
+                            <select class="form-select">
+                                <option>Kitchen Sink</option>
+                                <option>Wash Basin</option>
+                                <option>Toilet</option>
+                                <option>Shower</option>
+                                <option>Water Heater</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Pipe Length (meters)</label>
+                            <input type="number" class="form-control" placeholder="Total pipe length required">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fixture Count</label>
+                            <input type="number" class="form-control" placeholder="Number of fixtures">
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="showSection('estimator')">
+                            <i class="fas fa-calculator me-2"></i>Generate Estimate
+                        </button>
+                    `
+                },
+                'electrical': {
+                    title: 'Electrical Work Activity',
+                    form: `
+                        <div class="mb-3">
+                            <label class="form-label">Area/Location</label>
+                            <input type="text" class="form-control" placeholder="e.g., Living Room, Entire Floor">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Number of Points</label>
+                            <input type="number" class="form-control" placeholder="Total electrical points">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Wiring Type</label>
+                            <select class="form-select">
+                                <option>Concealed Wiring</option>
+                                <option>Surface Wiring</option>
+                                <option>Trunking</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Load Capacity</label>
+                            <select class="form-select">
+                                <option>Light Load (5A)</option>
+                                <option>Power Load (15A)</option>
+                                <option>Heavy Load (32A)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="showSection('estimator')">
+                            <i class="fas fa-calculator me-2"></i>Generate Estimate
+                        </button>
+                    `
+                }
+            };
+
+            const activity = activities[activityType];
+            if (activity) {
+                document.getElementById('activityTitle').textContent = activity.title;
+                document.getElementById('activityForm').innerHTML = activity.form;
+                
+                // Update active state
+                document.querySelectorAll('.list-group-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+        }
+
+        // Estimation
+        function generateEstimate() {
+            const activity = document.getElementById('estimateActivity').value;
+            const quantity = document.getElementById('estimateQuantity').value;
+            const unit = document.getElementById('estimateUnit').value;
+            const quality = document.getElementById('estimateQuality').value;
+
+            if (!quantity) {
+                alert('Please enter quantity');
+                return;
+            }
+
+            const rates = {
+                'tile-work': { economy: 450, standard: 650, premium: 850, luxury: 1200 },
+                'plumbing': { economy: 1200, standard: 1800, premium: 2500, luxury: 3500 },
+                'electrical': { economy: 800, standard: 1200, premium: 1600, luxury: 2200 },
+                'painting': { economy: 25, standard: 40, premium: 60, luxury: 85 },
+                'carpentry': { economy: 1800, standard: 2500, premium: 3500, luxury: 5000 },
+                'false-ceiling': { economy: 550, standard: 750, premium: 950, luxury: 1300 },
+                'excavation': { economy: 280, standard: 320, premium: 380, luxury: 450 },
+                'concrete': { economy: 6500, standard: 7600, premium: 8800, luxury: 10500 },
+                'masonry': { economy: 3200, standard: 3800, premium: 4500, luxury: 5500 }
+            };
+
+            const activityNames = {
+                'tile-work': 'Tile Work',
+                'plumbing': 'Plumbing Work',
+                'electrical': 'Electrical Work',
+                'painting': 'Painting Work',
+                'carpentry': 'Carpentry Work',
+                'false-ceiling': 'False Ceiling',
+                'excavation': 'Excavation Work',
+                'concrete': 'Concrete Work',
+                'masonry': 'Masonry Work'
+            };
+
+            const rate = rates[activity][quality];
+            const totalCost = rate * quantity;
+
+            document.getElementById('estimateResult').innerHTML = `
+                <div class="text-center mb-4">
+                    <h3 class="text-primary">₹${totalCost.toLocaleString()}</h3>
+                    <p class="text-muted">Estimated Cost for ${activityNames[activity]}</p>
+                </div>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="border rounded p-2">
+                            <div class="h5 mb-0">${quantity}</div>
+                            <small>${unit.toUpperCase()}</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border rounded p-2">
+                            <div class="h5 mb-0">₹${rate}</div>
+                            <small>Rate per ${unit}</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border rounded p-2">
+                            <div class="h5 mb-0">${quality}</div>
+                            <small>Quality</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Generate BOQ
+            generateBOQ(activity, quantity, unit, quality);
+        }
+
+        function generateBOQ(activity, quantity, unit, quality) {
+            const boqItems = {
+                'tile-work': [
+                    { item: 'Vitrified Tiles', unit: 'sqm', rate: 450, quantity: quantity },
+                    { item: 'Tile Adhesive', unit: 'bags', rate: 350, quantity: quantity * 0.08 },
+                    { item: 'Grouting Material', unit: 'kg', rate: 120, quantity: quantity * 0.5 },
+                    { item: 'Labor Charges', unit: 'sqm', rate: 200, quantity: quantity }
+                ],
+                'plumbing': [
+                    { item: 'PVC Pipes', unit: 'meters', rate: 85, quantity: quantity * 1.5 },
+                    { item: 'Fittings & Joints', unit: 'set', rate: 1200, quantity: Math.ceil(quantity / 10) },
+                    { item: 'Fixtures', unit: 'nos', rate: 2500, quantity: Math.ceil(quantity / 5) },
+                    { item: 'Labor Charges', unit: 'point', rate: 800, quantity: quantity }
+                ],
+                'electrical': [
+                    { item: 'Wires & Cables', unit: 'meters', rate: 45, quantity: quantity * 3 },
+                    { item: 'Switches & Sockets', unit: 'nos', rate: 180, quantity: quantity },
+                    { item: 'Conduits', unit: 'meters', rate: 35, quantity: quantity * 2 },
+                    { item: 'Labor Charges', unit: 'point', rate: 600, quantity: quantity }
+                ]
+            };
+
+            const items = boqItems[activity] || [
+                { item: 'Main Material', unit: unit, rate: 500, quantity: quantity },
+                { item: 'Labor Charges', unit: unit, rate: 200, quantity: quantity },
+                { item: 'Miscellaneous', unit: 'ls', rate: 1000, quantity: 1 }
+            ];
+
+            let boqHTML = `
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Item Description</th>
+                                <th>Unit</th>
+                                <th>Quantity</th>
+                                <th>Rate (₹)</th>
+                                <th>Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            let totalAmount = 0;
+            items.forEach(item => {
+                const amount = item.rate * item.quantity;
+                totalAmount += amount;
+                boqHTML += `
+                    <tr>
+                        <td>${item.item}</td>
+                        <td>${item.unit}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.rate}</td>
+                        <td>${amount.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+
+            boqHTML += `
+                            <tr class="table-primary">
+                                <td colspan="4" class="text-end"><strong>Total Amount</strong></td>
+                                <td><strong>₹${totalAmount.toLocaleString()}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            document.getElementById('boqResult').innerHTML = boqHTML;
+        }
+
+        // Work Order Management
+        function generateWorkOrder() {
+            const activity = document.getElementById('woActivity').value;
+            const activityNames = {
+                'tile-work': 'Tile Work',
+                'plumbing': 'Plumbing Work',
+                'electrical': 'Electrical Work',
+                'painting': 'Painting Work'
+            };
+
+            document.getElementById('workOrderPreview').innerHTML = `
+                <div class="text-center mb-4">
+                    <h4 class="text-primary">WORK ORDER</h4>
+                    <p class="text-muted">WO-2024-001</p>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Contractor:</strong> ABC Construction<br>
+                        <strong>Activity:</strong> ${activityNames[activity]}<br>
+                        <strong>Location:</strong> Site Location
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Date:</strong> ${new Date().toLocaleDateString()}<br>
+                        <strong>WO Number:</strong> WO-2024-001<br>
+                        <strong>Status:</strong> <span class="badge bg-warning">Issued</span>
+                    </div>
+                </div>
+                
+                <div class="border-top pt-3">
+                    <h6>Work Description:</h6>
+                    <p>Complete ${activityNames[activity]} as per specifications and drawings. All materials and workmanship should meet quality standards.</p>
+                    
+                    <h6 class="mt-3">Terms & Conditions:</h6>
+                    <ul class="small">
+                        <li>Work to be completed within agreed timeline</li>
+                        <li>Quality standards must be maintained</li>
+                        <li>Safety protocols to be followed</li>
+                        <li>Payment subject to work approval</li>
+                    </ul>
+                </div>
+                
+                <div class="border-top mt-4 pt-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Contractor Signature:</strong><br>
+                            ____________________
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <strong>Authorized Signature:</strong><br>
+                            ____________________
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Billing Management
+        function generateBill() {
+            document.getElementById('billPreview').innerHTML = `
+                <div class="text-center mb-4 border-bottom pb-3">
+                    <h4 class="text-primary">CONSTRUCTION BILL</h4>
+                    <p class="text-muted">BILL-2024-001 | Date: ${new Date().toLocaleDateString()}</p>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Bill To:</strong><br>
+                        ABC Construction<br>
+                        GSTIN: 07AABCU9603R1ZM<br>
+                        Address: Site Location
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Work Order:</strong> WO-2024-015<br>
+                        <strong>Activity:</strong> Tile Work<br>
+                        <strong>Period:</strong> 01-02-2024 to 15-02-2024
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Description</th>
+                                <th>Unit</th>
+                                <th>Quantity</th>
+                                <th>Rate (₹)</th>
+                                <th>Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tile Work - Living Room</td>
+                                <td>sqm</td>
+                                <td>45</td>
+                                <td>650</td>
+                                <td>29,250</td>
+                            </tr>
+                            <tr>
+                                <td>Material Supply</td>
+                                <td>ls</td>
+                                <td>1</td>
+                                <td>15,000</td>
+                                <td>15,000</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Subtotal</strong></td>
+                                <td><strong>44,250</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>GST (18%)</strong></td>
+                                <td><strong>7,965</strong></td>
+                            </tr>
+                            <tr class="table-primary">
+                                <td colspan="4" class="text-end"><strong>Total Amount</strong></td>
+                                <td><strong>52,215</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-4">
+                    <p><strong>Amount in Words:</strong> Fifty Two Thousand Two Hundred Fifteen Rupees Only</p>
+                </div>
+            `;
+        }
+
+        function downloadBill() {
+            alert('Bill PDF download functionality would be implemented here');
+        }
+
+        // Surveying Management
+        function addSurveyPoint() {
+            const pointId = document.getElementById('pointId').value;
+            const pointX = document.getElementById('pointX').value;
+            const pointY = document.getElementById('pointY').value;
+            const pointZ = document.getElementById('pointZ').value;
+            const pointDesc = document.getElementById('pointDesc').value;
+
+            if (!pointId || !pointX || !pointY) {
+                alert('Please fill Point ID and Coordinates');
+                return;
+            }
+
+            const pointHTML = `
+                <div class="survey-point">
+                    <div class="d-flex justify-content-between">
+                        <strong>${pointId}</strong>
+                        <span class="text-muted">${new Date().toLocaleDateString()}</span>
+                    </div>
+                    <div>Coordinates: X=${pointX}, Y=${pointY}, Z=${pointZ || 'N/A'}</div>
+                    <small>${pointDesc || 'No description'}</small>
+                </div>
+            `;
+
+            document.getElementById('surveyPointsList').innerHTML += pointHTML;
+            
+            // Clear form
+            document.getElementById('pointId').value = '';
+            document.getElementById('pointX').value = '';
+            document.getElementById('pointY').value = '';
+            document.getElementById('pointZ').value = '';
+            document.getElementById('pointDesc').value = '';
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any initialization code can go here
+        });
+    </script>
+</body>
+</html>
